@@ -3,6 +3,6 @@
     public class AddPropertyImageResponseDto
     {
         public int IdPropertyImage { get; set; }
-        public string FileUrl { get; set; }
+        public string? FileUrl { get; set; }
     }
 }

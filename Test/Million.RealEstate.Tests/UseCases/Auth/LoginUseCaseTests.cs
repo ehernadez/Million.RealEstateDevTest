@@ -1,3 +1,4 @@
+using AutoMapper;
 using Million.RealEstate.Application.DTOs;
 using Million.RealEstate.Application.UseCases.Auth.Implementations;
 using Million.RealEstate.Domain.Interfaces;
@@ -10,13 +11,15 @@ namespace Million.RealEstate.Tests.UseCases.Auth
     public class LoginUseCaseTests
     {
         private Mock<IUnitOfWork> _unitOfWorkMock;
+        private Mock<IMapper> _mapperMock;
         private LoginUseCase _loginUseCase;
 
         [SetUp]
         public void Setup()
         {
             _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _loginUseCase = new LoginUseCase(_unitOfWorkMock.Object);
+            _mapperMock = new Mock<IMapper>();
+            _loginUseCase = new LoginUseCase(_unitOfWorkMock.Object, _mapperMock.Object);
         }
 
         [Test]
@@ -36,9 +39,19 @@ namespace Million.RealEstate.Tests.UseCases.Auth
                 ExpiresAt = DateTime.UtcNow.AddHours(1)
             };
 
+            var loginResponseDto = new LoginResponseDto
+            {
+                Token = loginResponse.Token,
+                Email = loginResponse.Email,
+                ExpiresAt = loginResponse.ExpiresAt
+            };
+
             _unitOfWorkMock.Setup(u => u.AuthenticationService.AuthenticateAsync(
                 loginRequest.Email, loginRequest.Password))
                 .ReturnsAsync(loginResponse);
+
+            _mapperMock.Setup(m => m.Map<LoginResponseDto>(It.IsAny<LoginResponse>()))
+                .Returns(loginResponseDto);
 
             // Act
             var result = await _loginUseCase.ExecuteAsync(loginRequest);
@@ -51,8 +64,11 @@ namespace Million.RealEstate.Tests.UseCases.Auth
                 Assert.That(result.Email, Is.EqualTo(loginResponse.Email));
                 Assert.That(result.ExpiresAt, Is.EqualTo(loginResponse.ExpiresAt));
             });
+            
             _unitOfWorkMock.Verify(u => u.AuthenticationService.AuthenticateAsync(
                 loginRequest.Email, loginRequest.Password), Times.Once);
+            
+            _mapperMock.Verify(m => m.Map<LoginResponseDto>(It.IsAny<LoginResponse>()), Times.Once);
         }
 
         [Test]
@@ -75,6 +91,9 @@ namespace Million.RealEstate.Tests.UseCases.Auth
 
             _unitOfWorkMock.Verify(u => u.AuthenticationService.AuthenticateAsync(
                 loginRequest.Email, loginRequest.Password), Times.Once);
+            
+            // El mapper no debería ser llamado si hay una excepción
+            _mapperMock.Verify(m => m.Map<LoginResponseDto>(It.IsAny<LoginResponse>()), Times.Never);
         }
     }
 }

@@ -1,3 +1,4 @@
+using AutoMapper;
 using Million.RealEstate.Application.DTOs;
 using Million.RealEstate.Application.UseCases.PropertyImages.Implementations;
 using Million.RealEstate.Domain.Entities;
@@ -11,13 +12,15 @@ namespace Million.RealEstate.Tests.UseCases.PropertyImages
     public class AddPropertyImageUseCaseTests
     {
         private Mock<IUnitOfWork> _unitOfWorkMock;
+        private Mock<IMapper> _mapperMock;
         private AddPropertyImageUseCase _addPropertyImageUseCase;
 
         [SetUp]
         public void Setup()
         {
             _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _addPropertyImageUseCase = new AddPropertyImageUseCase(_unitOfWorkMock.Object);
+            _mapperMock = new Mock<IMapper>();
+            _addPropertyImageUseCase = new AddPropertyImageUseCase(_unitOfWorkMock.Object, _mapperMock.Object);
         }
 
         [Test]
@@ -50,6 +53,12 @@ namespace Million.RealEstate.Tests.UseCases.PropertyImages
                 Enabled = true
             };
 
+            var responseDto = new AddPropertyImageResponseDto
+            {
+                IdPropertyImage = propertyImage.IdPropertyImage,
+                FileUrl = fileUrl
+            };
+
             _unitOfWorkMock.Setup(u => u.Properties.GetByIdAsync(propertyId))
                 .ReturnsAsync(property);
 
@@ -58,6 +67,15 @@ namespace Million.RealEstate.Tests.UseCases.PropertyImages
 
             _unitOfWorkMock.Setup(u => u.FileStorageService.GetFileUrl(savedFilePath))
                 .Returns(fileUrl);
+
+            _mapperMock.Setup(m => m.Map<PropertyImage>(It.IsAny<AddPropertyImageDto>()))
+                .Returns(new PropertyImage 
+                { 
+                    Enabled = addPropertyImageDto.Enabled 
+                });
+
+            _mapperMock.Setup(m => m.Map<AddPropertyImageResponseDto>(It.IsAny<PropertyImage>()))
+                .Returns(responseDto);
 
             _unitOfWorkMock.Setup(u => u.PropertyImages.AddAsync(It.IsAny<PropertyImage>()))
                 .Callback<PropertyImage>(pi => 
@@ -80,9 +98,12 @@ namespace Million.RealEstate.Tests.UseCases.PropertyImages
                 Assert.That(result.IdPropertyImage, Is.EqualTo(propertyImage.IdPropertyImage));
                 Assert.That(result.FileUrl, Is.EqualTo(fileUrl));
             });
+
             _unitOfWorkMock.Verify(u => u.Properties.GetByIdAsync(propertyId), Times.Once);
             _unitOfWorkMock.Verify(u => u.FileStorageService.SaveFileAsync(It.IsAny<Stream>(), It.IsAny<string>()), Times.Once);
             _unitOfWorkMock.Verify(u => u.FileStorageService.GetFileUrl(savedFilePath), Times.Once);
+            _mapperMock.Verify(m => m.Map<PropertyImage>(It.IsAny<AddPropertyImageDto>()), Times.Once);
+            _mapperMock.Verify(m => m.Map<AddPropertyImageResponseDto>(It.IsAny<PropertyImage>()), Times.Once);
             _unitOfWorkMock.Verify(u => u.PropertyImages.AddAsync(It.IsAny<PropertyImage>()), Times.Once);
             _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Once);
         }
@@ -112,6 +133,8 @@ namespace Million.RealEstate.Tests.UseCases.PropertyImages
             _unitOfWorkMock.Verify(u => u.Properties.GetByIdAsync(propertyId), Times.Once);
             _unitOfWorkMock.Verify(u => u.FileStorageService.SaveFileAsync(It.IsAny<Stream>(), It.IsAny<string>()), Times.Never);
             _unitOfWorkMock.Verify(u => u.FileStorageService.GetFileUrl(It.IsAny<string>()), Times.Never);
+            _mapperMock.Verify(m => m.Map<PropertyImage>(It.IsAny<AddPropertyImageDto>()), Times.Never);
+            _mapperMock.Verify(m => m.Map<AddPropertyImageResponseDto>(It.IsAny<PropertyImage>()), Times.Never);
             _unitOfWorkMock.Verify(u => u.PropertyImages.AddAsync(It.IsAny<PropertyImage>()), Times.Never);
             _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Never);
         }
@@ -144,6 +167,8 @@ namespace Million.RealEstate.Tests.UseCases.PropertyImages
             _unitOfWorkMock.Verify(u => u.Properties.GetByIdAsync(propertyId), Times.Once);
             _unitOfWorkMock.Verify(u => u.FileStorageService.SaveFileAsync(It.IsAny<Stream>(), It.IsAny<string>()), Times.Never);
             _unitOfWorkMock.Verify(u => u.FileStorageService.GetFileUrl(It.IsAny<string>()), Times.Never);
+            _mapperMock.Verify(m => m.Map<PropertyImage>(It.IsAny<AddPropertyImageDto>()), Times.Never);
+            _mapperMock.Verify(m => m.Map<AddPropertyImageResponseDto>(It.IsAny<PropertyImage>()), Times.Never);
             _unitOfWorkMock.Verify(u => u.PropertyImages.AddAsync(It.IsAny<PropertyImage>()), Times.Never);
             _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Never);
         }

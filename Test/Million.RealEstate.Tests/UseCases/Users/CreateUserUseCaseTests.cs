@@ -35,9 +35,18 @@ namespace Million.RealEstate.Tests.UseCases.Users
             };
 
             var hashedPassword = "hashedPassword123";
+            var expectedUser = new User
+            {
+                FirstName = createUserDto.FirstName,
+                LastName = createUserDto.LastName,
+                Email = createUserDto.Email
+            };
 
             _unitOfWorkMock.Setup(u => u.Users.EmailExistsAsync(createUserDto.Email))
                 .ReturnsAsync(false);
+
+            _mapperMock.Setup(m => m.Map<User>(It.IsAny<CreateUserDto>()))
+                .Returns(expectedUser);
 
             _unitOfWorkMock.Setup(u => u.PasswordHasher.HashPassword(createUserDto.Password))
                 .Returns(hashedPassword);
@@ -54,7 +63,13 @@ namespace Million.RealEstate.Tests.UseCases.Users
 
             // Assert
             Assert.That(result, Is.EqualTo(1));
+            
             _unitOfWorkMock.Verify(u => u.Users.EmailExistsAsync(createUserDto.Email), Times.Once);
+            _mapperMock.Verify(m => m.Map<User>(It.Is<CreateUserDto>(dto => 
+                dto.Email == createUserDto.Email &&
+                dto.FirstName == createUserDto.FirstName &&
+                dto.LastName == createUserDto.LastName)), 
+                Times.Once);
             _unitOfWorkMock.Verify(u => u.PasswordHasher.HashPassword(createUserDto.Password), Times.Once);
             _unitOfWorkMock.Verify(u => u.Users.AddAsync(It.Is<User>(u => 
                 u.Email == createUserDto.Email && 
@@ -87,6 +102,7 @@ namespace Million.RealEstate.Tests.UseCases.Users
             Assert.That(ex.Message, Is.EqualTo("Email already exists"));
             
             _unitOfWorkMock.Verify(u => u.Users.EmailExistsAsync(createUserDto.Email), Times.Once);
+            _mapperMock.Verify(m => m.Map<User>(It.IsAny<CreateUserDto>()), Times.Never);
             _unitOfWorkMock.Verify(u => u.PasswordHasher.HashPassword(It.IsAny<string>()), Times.Never);
             _unitOfWorkMock.Verify(u => u.Users.AddAsync(It.IsAny<User>()), Times.Never);
             _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Never);

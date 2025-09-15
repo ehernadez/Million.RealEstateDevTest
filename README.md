@@ -21,7 +21,7 @@ Antes de ejecutar el proyecto, asegúrate de tener instalado lo siguiente:
 
 ## Primeros Pasos
 
-### Ejecutar con Docker Compose
+### Iniciar SQL Server con Docker Compose
 
 1. Clona el repositorio:
 ```bash
@@ -29,25 +29,44 @@ git clone https://github.com/ehernadez/Million.RealEstateDevTest.git
 cd Million.RealEstateDevTest
 ```
 
-2. Iniciar la aplicación y la base de datos usando Docker Compose:
+2. Inicia la instancia de SQL Server usando Docker Compose:
 ```bash
-docker-compose up -d
+docker-compose up -d db
 ```
 
-Esto:
-- Creará e iniciará una instancia de SQL Server
-- Creará la base de datos automáticamente
-- Construirá e iniciará la aplicación API
+Esto creará e iniciará una instancia de SQL Server con la base de datos configurada.
 
-La API estará disponible en: `http://localhost:5000`
-La documentación de Swagger estará en: `http://localhost:5000/swagger`
+### Ejecutar la API
 
-### Ejecutar con Visual Studio (Alternativa)
+Tenemos dos opciones para ejecutar la API:
 
-1. Asegúrate de haber ejecutado el Docker Compose (para la base de datos) y este corriendo la instancia de sqlServer
+#### Opción 1: Usando Visual Studio
+
+1. Asegúrate de que la instancia de SQL Server en Docker esté ejecutándose
 2. Abre la solución en Visual Studio 2022
 3. Establece Million.RealEstate.API como proyecto de inicio
 4. Presiona F5 o haz clic en Iniciar Depuración
+
+#### Opción 2: Usando la Línea de Comandos
+
+1. Asegúrate de que la instancia de SQL Server en Docker esté ejecutándose
+2. Navega hasta el directorio del proyecto API:
+```bash
+cd Million.RealEstate.API
+```
+3. Ejecuta el proyecto:
+```bash
+dotnet run
+```
+
+### URLs de Acceso
+
+Una vez que la API esté en ejecución, podrás acceder a:
+
+- API: `https://localhost:7041` o `http://localhost:5197`
+- Documentación Swagger: `https://localhost:7041/index.html` o `http://localhost:5197/index.html`
+
+Nota: Verifica que al ejecutar el proyecto sean los mismos puertos para acceder
 
 ## Autenticación
 
@@ -94,10 +113,10 @@ La solución sigue los principios de Arquitectura Limpia y está organizada en l
 
 La aplicación está configurada para usar SQL Server con la siguiente cadena de conexión predeterminada:
 ```
-Server=host;Database=RealEstateDB;User Id=sa;Password=RealEstate123!;TrustServerCertificate=True
+Server=localhost;Database=RealEstateDB;User Id=sa;Password=RealEstate123!;TrustServerCertificate=True
 ```
 
-Al ejecutar con Docker Compose, esta configuración se realiza automáticamente.
+Esta configuración asume que SQL Server está ejecutándose en Docker. La base de datos se creará automáticamente en la primera ejecución.
 
 ## Notas Adicionales
 

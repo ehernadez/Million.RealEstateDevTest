@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Million.RealEstate.Application.DTOs.Auth
+namespace Million.RealEstate.Application.DTOs
 {
     public class LoginRequestDto
     {

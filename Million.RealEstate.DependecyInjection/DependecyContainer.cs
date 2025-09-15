@@ -16,6 +16,8 @@ namespace Million.RealEstate.DependecyInjection
             services.AddAutoMapper(cfg => {
                 cfg.AddProfile<PropertyProfile>();
                 cfg.AddProfile<UserProfile>();
+                cfg.AddProfile<OwnerProfile>();
+                cfg.AddProfile<AuthProfile>();
             });
 
             return services;

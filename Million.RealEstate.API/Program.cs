@@ -81,6 +81,7 @@ app.MapAuthEndpoints();
 app.MapPropertyEndpoints();
 app.MapPropertyImageEndpoints();
 app.MapPropertyTraceEndpoints();
+app.MapOwnerEndpoints();
 
 using (var scope = app.Services.CreateScope())
 {

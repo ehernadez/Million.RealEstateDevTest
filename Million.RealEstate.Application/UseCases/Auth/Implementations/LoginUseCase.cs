@@ -1,4 +1,4 @@
-using Million.RealEstate.Application.DTOs.Auth;
+using Million.RealEstate.Application.DTOs;
 using Million.RealEstate.Domain.Interfaces;
 
 namespace Million.RealEstate.Application.UseCases.Auth.Implementations

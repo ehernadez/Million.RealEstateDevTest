@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
-using Million.RealEstate.Application.DTOs.Auth;
+using Million.RealEstate.Application.DTOs;
 using Million.RealEstate.Application.UseCases.Auth;
 
 namespace Million.RealEstate.API.EndPoints

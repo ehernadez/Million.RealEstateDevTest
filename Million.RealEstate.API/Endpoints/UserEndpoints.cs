@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
-using Million.RealEstate.Application.DTOs.Users;
+using Million.RealEstate.Application.DTOs;
 using Million.RealEstate.Application.UseCases.Users;
 using System.ComponentModel.DataAnnotations;
 

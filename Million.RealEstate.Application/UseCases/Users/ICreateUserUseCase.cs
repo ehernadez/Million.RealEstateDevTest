@@ -1,4 +1,4 @@
-﻿using Million.RealEstate.Application.DTOs.Users;
+﻿using Million.RealEstate.Application.DTOs;
 
 namespace Million.RealEstate.Application.UseCases.Users
 {

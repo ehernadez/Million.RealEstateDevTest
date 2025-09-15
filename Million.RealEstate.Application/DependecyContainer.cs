@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Million.RealEstate.Application.UseCases.Auth;
 using Million.RealEstate.Application.UseCases.Auth.Implementations;
+using Million.RealEstate.Application.UseCases.Owners;
+using Million.RealEstate.Application.UseCases.Owners.Implementations;
 using Million.RealEstate.Application.UseCases.Properties;
 using Million.RealEstate.Application.UseCases.Properties.Implementations;
 using Million.RealEstate.Application.UseCases.PropertyImages;
@@ -41,6 +43,13 @@ namespace Million.RealEstate.Application
 
             // User Use Cases
             services.AddScoped<ICreateUserUseCase, CreateUserUseCase>();
+
+            // Owner Use Cases
+            services.AddScoped<ICreateOwnerUseCase, CreateOwnerUseCase>();
+            services.AddScoped<IUpdateOwnerUseCase, UpdateOwnerUseCase>();
+            services.AddScoped<IDeleteOwnerUseCase, DeleteOwnerUseCase>();
+            services.AddScoped<IGetOwnerByIdUseCase, GetOwnerByIdUseCase>();
+            services.AddScoped<IGetAllOwnersUseCase, GetAllOwnersUseCase>();
 
             return services;
         }

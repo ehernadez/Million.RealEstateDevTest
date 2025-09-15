@@ -1,5 +1,5 @@
 using AutoMapper;
-using Million.RealEstate.Application.DTOs.Users;
+using Million.RealEstate.Application.DTOs;
 using Million.RealEstate.Domain.Entities;
 
 namespace Million.RealEstate.Application.Mapping

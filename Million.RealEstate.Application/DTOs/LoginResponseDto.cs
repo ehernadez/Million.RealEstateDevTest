@@ -1,4 +1,4 @@
-namespace Million.RealEstate.Application.DTOs.Auth
+namespace Million.RealEstate.Application.DTOs
 {
     public class LoginResponseDto
     {

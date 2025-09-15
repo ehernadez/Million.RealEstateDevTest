@@ -1,11 +1,10 @@
 using AutoMapper;
-using Million.RealEstate.Application.DTOs.Users;
+using Million.RealEstate.Application.DTOs;
 using Million.RealEstate.Application.UseCases.Users.Implementations;
 using Million.RealEstate.Domain.Entities;
 using Million.RealEstate.Domain.Interfaces;
 using Moq;
 using NUnit.Framework;
-using System.ComponentModel.DataAnnotations;
 
 namespace Million.RealEstate.Tests.UseCases.Users
 {

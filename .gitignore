@@ -416,3 +416,4 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+/Million.RealEstate.API/wwwroot/images/properties/*

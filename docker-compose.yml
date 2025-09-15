@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      # Agrega un carácter especial para cumplir política de complejidad
+      - SA_PASSWORD=RealEstate123!
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    networks:
+      - realestate-net
+    # Healthcheck sin sqlcmd (algunos tags ya no lo traen instalado)
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/1433'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 90s
+    restart: unless-stopped #always
+    # (Opcional) volumen para persistir DB entre reinicios
+    # volumes:
+    #   - mssql-data:/var/opt/mssql
+
+  api:
+    build:
+      context: .
+      dockerfile: Million.RealEstate.API/Dockerfile
+    container_name: realestate-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # - ConnectionStrings__RealEstateConnection=Server=sqlserver;Database=RealEstateDb;User=sa;Password=RealEstate123!;TrustServerCertificate=True;MultipleActiveResultSets=true
+    ports:
+      - "5000:8080"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - realestate-net
+    restart: always
+
+networks:
+  realestate-net:
+    driver: bridge
+
+volumes:
+ mssql-data:

@@ -20,8 +20,13 @@ namespace Million.RealEstate.Application.Mapping
             // Owner mapping
             CreateMap<Owner, OwnerDto>();
 
-            // PropertyImage mapping
+            // PropertyImage mappings
             CreateMap<PropertyImage, PropertyImageDto>();
+            CreateMap<AddPropertyImageDto, PropertyImage>()
+                .ForMember(dest => dest.File, opt => opt.Ignore())
+                .ForMember(dest => dest.IdProperty, opt => opt.Ignore());
+            CreateMap<PropertyImage, AddPropertyImageResponseDto>()
+                .ForMember(dest => dest.FileUrl, opt => opt.Ignore());
 
             // Property paged response mapping
             CreateMap<(IEnumerable<Property> Items, int TotalCount), PropertyPagedResponseDto>()
@@ -29,27 +34,6 @@ namespace Million.RealEstate.Application.Mapping
                 .ForMember(dest => dest.TotalCount, opt => opt.MapFrom(src => src.TotalCount))
                 .ForMember(dest => dest.PageNumber, opt => opt.Ignore())
                 .ForMember(dest => dest.PageSize, opt => opt.Ignore());
-
-            // PropertyTrace mappings
-            CreateMap<PropertyTrace, PropertyTraceDto>();
-            
-            CreateMap<CreatePropertyTraceDto, PropertyTrace>()
-                .ForMember(dest => dest.IdPropertyTrace, opt => opt.Ignore())
-                .ForMember(dest => dest.IdProperty, opt => opt.Ignore())
-                .ForMember(dest => dest.Property, opt => opt.Ignore())
-                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
-                .ForMember(dest => dest.CreatedOn, opt => opt.Ignore())
-                .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore())
-                .ForMember(dest => dest.UpdatedOn, opt => opt.Ignore());
-
-            CreateMap<UpdatePropertyTraceDto, PropertyTrace>()
-                .ForMember(dest => dest.IdPropertyTrace, opt => opt.Ignore())
-                .ForMember(dest => dest.IdProperty, opt => opt.Ignore())
-                .ForMember(dest => dest.Property, opt => opt.Ignore())
-                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
-                .ForMember(dest => dest.CreatedOn, opt => opt.Ignore())
-                .ForMember(dest => dest.UpdatedBy, opt => opt.Ignore())
-                .ForMember(dest => dest.UpdatedOn, opt => opt.Ignore());
         }
     }
 }

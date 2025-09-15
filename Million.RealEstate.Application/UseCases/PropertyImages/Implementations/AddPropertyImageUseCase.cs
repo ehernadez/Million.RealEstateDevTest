@@ -1,3 +1,4 @@
+using AutoMapper;
 using Million.RealEstate.Application.DTOs;
 using Million.RealEstate.Domain.Entities;
 using Million.RealEstate.Domain.Interfaces;
@@ -8,10 +9,12 @@ namespace Million.RealEstate.Application.UseCases.PropertyImages.Implementations
     public class AddPropertyImageUseCase : IAddPropertyImageUseCase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public AddPropertyImageUseCase(IUnitOfWork unitOfWork)
+        public AddPropertyImageUseCase(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<AddPropertyImageResponseDto> ExecuteAsync(int propertyId, AddPropertyImageDto dto)
@@ -27,22 +30,17 @@ namespace Million.RealEstate.Application.UseCases.PropertyImages.Implementations
                 var savedFileName = await _unitOfWork.FileStorageService.SaveFileAsync(dto.ImageStream, dto.FileName);
                 var fileUrl = _unitOfWork.FileStorageService.GetFileUrl(savedFileName);
 
-                var image = new PropertyImage
-                {
-                    IdProperty = propertyId,
-                    File = savedFileName,
-                    Enabled = dto.Enabled
-                };
+                var image = _mapper.Map<PropertyImage>(dto);
+                image.IdProperty = propertyId;
+                image.File = savedFileName;
 
                 await _unitOfWork.PropertyImages.AddAsync(image);
                 await _unitOfWork.SaveChangesAsync();
 
-                // Mapear respuesta
-                return new AddPropertyImageResponseDto
-                {
-                    IdPropertyImage = image.IdPropertyImage,
-                    FileUrl = fileUrl
-                };
+                var response = _mapper.Map<AddPropertyImageResponseDto>(image);
+                response.FileUrl = fileUrl;
+
+                return response;
             }
             catch (Exception ex)
             {

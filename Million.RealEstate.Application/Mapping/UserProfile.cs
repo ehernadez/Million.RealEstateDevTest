@@ -9,6 +9,11 @@ namespace Million.RealEstate.Application.Mapping
         public UserProfile()
         {
             CreateMap<User, UserDto>();
+            
+            CreateMap<CreateUserDto, User>()
+                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
         }
     }
 }

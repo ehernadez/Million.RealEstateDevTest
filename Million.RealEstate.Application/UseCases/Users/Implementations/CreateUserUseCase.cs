@@ -23,14 +23,9 @@ namespace Million.RealEstate.Application.UseCases.Users.Implementations
                 throw new InvalidOperationException("Email already exists");
             }
 
-            var user = new User
-            {
-                Email = createUserDto.Email,
-                PasswordHash = _unitOfWork.PasswordHasher.HashPassword(createUserDto.Password),
-                FirstName = createUserDto.FirstName,
-                LastName = createUserDto.LastName,
-                CreatedAt = DateTime.UtcNow
-            };
+            var user = _mapper.Map<User>(createUserDto);
+            user.PasswordHash = _unitOfWork.PasswordHasher.HashPassword(createUserDto.Password);
+            user.CreatedAt = DateTime.UtcNow;
 
             await _unitOfWork.Users.AddAsync(user);
             await _unitOfWork.SaveChangesAsync();

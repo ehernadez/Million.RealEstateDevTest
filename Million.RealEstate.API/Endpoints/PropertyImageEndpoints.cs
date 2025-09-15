@@ -12,7 +12,7 @@ namespace Million.RealEstate.API.EndPoints
     {
         public static void MapPropertyImageEndpoints(this IEndpointRouteBuilder endpoints)
         {
-            endpoints.MapPost("/properties/images/{id}", [Authorize] async Task<IResult> (int id, IFormFile file, bool enabled, IAddPropertyImageUseCase useCase) =>
+            endpoints.MapPost("/properties/images/{propertyId}", [Authorize] async Task<IResult> (int propertyId, IFormFile file, bool enabled, IAddPropertyImageUseCase useCase) =>
             {
                 try
                 {
@@ -36,8 +36,8 @@ namespace Million.RealEstate.API.EndPoints
                         Enabled = enabled
                     };
 
-                    var result = await useCase.ExecuteAsync(id, dto);
-                    return Results.Created($"/properties/{id}/images/{result.IdPropertyImage}", result);
+                    var result = await useCase.ExecuteAsync(propertyId, dto);
+                    return Results.Created($"/properties/{propertyId}/images/{result.IdPropertyImage}", result);
                 }
                 catch (ValidationException ex)
                 {

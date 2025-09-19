@@ -31,7 +31,7 @@ cd Million.RealEstateDevTest
 
 2. Inicia la instancia de SQL Server usando Docker Compose:
 ```bash
-docker-compose up -d db
+docker-compose up -d
 ```
 
 Esto creará e iniciará una instancia de SQL Server con la base de datos configurada.

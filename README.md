@@ -79,16 +79,17 @@ La API utiliza autenticación por token JWT Bearer. La mayoría de los endpoints
 1. Crea un usuario usando el endpoint `/users`:
 ```json
 {
-    "username": "tu_usuario",
+    "email": "user@example.com",
     "password": "tu_contraseña",
-    "email": "tu_correo@ejemplo.com"
+    "firstName": "Nombre",
+    "lastName": "Apellido"
 }
 ```
 
 2. Autentícate usando el endpoint `/auth/login` para obtener tu token JWT:
 ```json
 {
-    "username": "tu_usuario",
+    "email": "user@example.com",
     "password": "tu_contraseña"
 }
 ```
